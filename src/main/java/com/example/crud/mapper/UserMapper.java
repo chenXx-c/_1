@@ -1,6 +1,6 @@
 package com.example.crud.mapper;
 
-import com.example.crud.User;
+import com.example.crud.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 

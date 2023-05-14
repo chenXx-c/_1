@@ -1,4 +1,4 @@
-package com.example.crud;
+package com.example.crud.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
