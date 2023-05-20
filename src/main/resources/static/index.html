@@ -32,23 +32,56 @@
         })
 
 
-    fetch('/schedule/info').then(res => res.json())
-        .then(res => {
-            const scheduleDiv = document.getElementById("schedule")
-            res.forEach(item => {
-                scheduleDiv.innerHTML += `
+    function loadSchedule() {
+        fetch('/schedule/info').then(res => res.json())
+            .then(res => {
+                const scheduleDiv = document.getElementById("schedule")
+                scheduleDiv.innerHTML = ''
+                res.forEach(item => {
+                    let column = ''
+                    if (item.between === 0) {
+                        column =  `<div style="flex: 1">今天过期</div>`
+                    } else if(item.between > 0) {
+                        column = `<div style="flex: 1">还剩${item.between}天过期</div>`
+                    } else {
+                        column = `<div style="flex: 1">已过期${Math.abs(item.between)}天</div>`
+                    }
+
+
+                    scheduleDiv.innerHTML += `
                 <div style="padding-bottom: 5px; color: #666; border-bottom: 1px solid #ccc; display: flex; margin-top: 10px">
+
                     <div style="flex: 1">${item.name}</div>
                     <div style="flex: 1">${item.description}</div>
-                    <div style="flex: 1">${item.date}</div>
+                    <div style="flex: 1">${item.date}</div>`
+
+                    + column
+
+                    + `<div style="flex: 1"><button onclick="del(${item.id})">删除</button></div>
                 </div>
                 `
+                })
             })
+            .catch(e => {
+                console.error(e)
+                location.href = '/login.html'
+            })
+    }
+
+    loadSchedule()  // 页面加载的时候触发函数请求数据
+
+    function del(id) {
+        fetch('/schedule/' + id, {
+            method: 'DELETE'
+        }).then(res => {
+            if (res.status/200 < 2) {  // status == 200表示成功
+                alert("删除成功")
+                loadSchedule()
+            }else {
+                alert("删除失败")
+            }
         })
-        .catch(e => {
-            console.error(e)
-            location.href = '/login.html'
-        })
+    }
 
     function save() {
         const nameInput = document.getElementById('name')
@@ -72,6 +105,8 @@
                 nameInput.value = ''
                 descriptionInput.value = ''
                 dateInput.value = ''
+
+                loadSchedule()
             } else {
                 alert("提交失败")
             }

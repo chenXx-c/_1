@@ -13,4 +13,5 @@ public class Schedule {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date date;
     private Integer userId;
+    private Integer between;
 }
